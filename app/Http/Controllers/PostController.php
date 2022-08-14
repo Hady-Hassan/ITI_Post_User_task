@@ -22,11 +22,20 @@ class PostController extends Controller
 
  function store(Request $request)
  {
-   Post::create(
-      ['title' => $request['title'] , 'body' => $request['body'] , 'enabled'=> true , 'user_id'=> 123 , 'published_at'=>date("Y-m-d H:i:s", strtotime('now'))]
-      );
-      $posts = Post::simplepaginate(20);
-      return view("posts.index")->with('posts',$posts);
+   $validatedData = $request->validate([
+      'title' => 'required|max:100',
+      'body' => 'required|max:1000',
+      ]);
+      if($validatedData)
+      {
+         $path = $request->file('image')->store('uploaded images','images');
+         Post::create(
+            ['title' => $request['title'] , 'body' => $request['body'] , 'enabled'=> true , 'user_id'=> auth()->user()->id ,'image'=>$request['image'], 'published_at'=>date("Y-m-d H:i:s", strtotime('now'))]
+            );
+            $posts = Post::simplepaginate(20);
+            return view("posts.index")->with('posts',$posts);
+      } 
+      return view("posts.create");
  }
  function show($id)
  {
@@ -36,7 +45,13 @@ class PostController extends Controller
  function edit($id)
  {
     $post =Post::where('id', $id)->get()->first() ;
-    return view("posts.edit")->with('post',$post);
+    if($post['user_id']==auth()->user()->id)
+    {
+      return view("posts.edit")->with('post',$post);
+    }
+    $posts = Post::simplepaginate(20);
+    $msg = "you are not the owner of the post";
+    return view("posts.index",['posts'=>$posts,'err'=>$msg]);
  }
  function update(Request $request , $id)
  {

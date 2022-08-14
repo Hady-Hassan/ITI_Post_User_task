@@ -3,6 +3,9 @@
 @section('new', 'active')
 @section('content')
 
+
+
+
 <form action="." method="post">
   @csrf
     <div class="mb-3">

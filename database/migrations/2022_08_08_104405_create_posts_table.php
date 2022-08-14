@@ -20,6 +20,7 @@ return new class extends Migration
             $table->boolean('enabled');
             $table->dateTime('published_at');
             $table->integer('user_id');
+            $table->string('image')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

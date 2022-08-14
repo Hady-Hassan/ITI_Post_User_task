@@ -10,7 +10,8 @@ class UserController extends Controller
 
  function index()
  {
-    $users = User::simplepaginate(20);
+    $users = User::withcount('posts')-> simplepaginate(20);
+    
     return view("users.index")->with('users',$users);
 
  }
@@ -29,8 +30,9 @@ class UserController extends Controller
  }
  function show($id)
  {
-   $user =User::where('id', $id)->get()->first();  
-   return view("users.show")->with('user',$user);
+   $user =User::where('id', $id)->get()->first(); 
+   $posts = User::find($user['id'])->posts; 
+   return view("users.show",['user'=>$user,'posts'=>$posts]);
  }
  function edit($id)
  {

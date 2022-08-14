@@ -21,7 +21,7 @@ class PostFactory extends Factory
             'body' => fake()->paragraph(),
             'enabled'=>fake()->boolean(),
             'published_at'=>fake()->date(),
-            'user_id'=>fake()->randomNumber($nbDigits = NULL),
+            'user_id' => \App\Models\User::inRandomOrder()->first()->id
 
         ];
     }
